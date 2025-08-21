@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Outsider</title>
+    <title>Outsider</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>The Awakening Tower</h1>
     <canvas id="gameCanvas"></canvas>
-    <script src="game.js"></script>
+
+    <!-- 脚本加载顺序非常重要 -->
+    <script src="js/constants.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/inputHandler.js"></script>
+    <script src="js/states.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/main.js"></script>
 </body>
-</html> 
+</html>
