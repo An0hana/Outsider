@@ -1,12 +1,6 @@
-// js/utils.js
 
-/**
- * 加载精灵图并将其切割成独立的帧画布
- * @param {string} path 图片路径
- * @param {number} frameCount 包含的总帧数
- * @returns {Promise<{frames: HTMLCanvasElement[], frameWidth: number, frameHeight: number}>}
- */
-function loadSpriteSheet(path, frameCount) {
+//加载精灵图并按帧切割
+export function loadSpriteSheet(path, frameCount) {
     return new Promise((resolve) => {
         const img = new Image();
         img.src = path;
@@ -27,12 +21,8 @@ function loadSpriteSheet(path, frameCount) {
     });
 }
 
-/**
- * 加载单张图片
- * @param {string} path 图片路径
- * @returns {Promise<HTMLImageElement>}
- */
-function loadImage(path) {
+//加载图片
+export function loadImage(path) {
     return new Promise((resolve) => {
         const img = new Image();
         img.src = path;

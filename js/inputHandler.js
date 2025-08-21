@@ -1,6 +1,5 @@
-// js/inputHandler.js
 
-class InputHandler {
+export class InputHandler {
     constructor() {
         this.keys = {
             ArrowLeft: false,

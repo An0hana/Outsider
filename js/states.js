@@ -1,4 +1,4 @@
-// js/states.js
+import { states, JUMP_POWER } from './constants.js';
 
 class State {
     constructor(state, player) {
@@ -10,7 +10,7 @@ class State {
     update() {}
 }
 
-class IdleState extends State {
+export class IdleState extends State {
     constructor(player) {
         super('IDLE', player);
     }
@@ -29,7 +29,7 @@ class IdleState extends State {
     }
 }
 
-class WalkState extends State {
+export class WalkState extends State {
     constructor(player) {
         super('WALK', player);
     }
@@ -48,7 +48,7 @@ class WalkState extends State {
     }
 }
 
-class JumpState extends State {
+export class JumpState extends State {
     constructor(player) {
         super('JUMP', player);
     }
@@ -68,7 +68,7 @@ class JumpState extends State {
     }
 }
 
-class FallState extends State {
+export class FallState extends State {
     constructor(player) {
         super('FALL', player);
     }
@@ -85,7 +85,7 @@ class FallState extends State {
     }
 }
 
-class LandState extends State {
+export class LandState extends State {
     constructor(player) {
         super('LAND', player);
     }
@@ -105,7 +105,7 @@ class LandState extends State {
     }
 }
 
-class AttackState extends State {
+export class AttackState extends State {
     constructor(player) {
         super('ATTACK', player);
     }

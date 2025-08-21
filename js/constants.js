@@ -1,16 +1,14 @@
-// js/constants.js
-
 // 物理常量
-const GRAVITY = 0.1;
-const MOVE_SPEED = 3;
-const JUMP_POWER = 5;
+export const GRAVITY = 0.1;
+export const MOVE_SPEED = 3;
+export const JUMP_POWER = 5;
 
 // 玩家渲染常量
-const TARGET_H = 120; // 目标渲染高度
-const WALK_PRE_COUNT = 3; // 行走动画的起步帧数
+export const TARGET_H = 120; // 目标渲染高度
+export const WALK_PRE_COUNT = 3; // 起步帧数
 
-// 状态枚举，便于管理和引用
-const states = {
+// 玩家状态
+export const states = {
     IDLE: 0,
     WALK: 1,
     JUMP: 2,
@@ -19,8 +17,8 @@ const states = {
     ATTACK: 5,
 };
 
-// 状态对应的动画帧延迟
-const frameDelayByState = {
+// 玩家状态状态帧延迟
+export const frameDelayByState = {
     idle: 15,
     walk: 10,
     jump: 12,

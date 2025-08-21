@@ -1,6 +1,7 @@
-// js/player.js (已修正)
+import { GRAVITY, MOVE_SPEED, JUMP_POWER, TARGET_H, WALK_PRE_COUNT, frameDelayByState, states } from './constants.js';
+import { IdleState, WalkState, JumpState, FallState, LandState, AttackState } from './states.js';
 
-class Player {
+export class Player {
     constructor(canvasWidth, canvasHeight, assets) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
