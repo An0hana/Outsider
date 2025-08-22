@@ -1,20 +1,26 @@
 import { states, JUMP_POWER } from './constants.js';
 
+//基类状态
 class State {
     constructor(state, player) {
         this.state = state;
         this.player = player;
     }
+    //初始化
     enter() {}
+    //处理输入
     handleInput(input) {}
+    //更新该状态下逻辑
     update() {}
 }
+
 
 export class IdleState extends State {
     constructor(player) {
         super('IDLE', player);
     }
     enter() {
+        //重置帧索引和计时器
         this.player.frameTimer = 0;
         this.player.currentFrame = 0;
     }

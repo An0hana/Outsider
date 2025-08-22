@@ -24,5 +24,5 @@ export const frameDelayByState = {
     jump: 12,
     fall: 12,
     land: 5,
-    attack: 3,
+    attack: 4,
 };
