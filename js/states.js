@@ -25,12 +25,12 @@ export class IdleState extends State {
         this.player.currentFrame = 0;
     }
     handleInput(input) {
-        if (input.keys.Attack) {
+        if ((input.keys.ArrowLeft || input.keys.ArrowRight) && !(input.keys.ArrowLeft && input.keys.ArrowRight)) {
+            this.player.setState(states.WALK);
+        } else if (input.keys.Attack) {
             this.player.setState(states.ATTACK);
         } else if (input.keys.Space && this.player.isOnGround()) {
             this.player.setState(states.JUMP);
-        } else if (input.keys.ArrowLeft || input.keys.ArrowRight) {
-            this.player.setState(states.WALK);
         }
     }
 }
@@ -44,12 +44,12 @@ export class WalkState extends State {
         this.player.currentFrame = 0;
     }
     handleInput(input) {
-        if (input.keys.Attack) {
+        if (!(input.keys.ArrowLeft || input.keys.ArrowRight) || (input.keys.ArrowLeft && input.keys.ArrowRight)) {
+            this.player.setState(states.IDLE);
+        } else if (input.keys.Attack) {
             this.player.setState(states.ATTACK);
         } else if (input.keys.Space && this.player.isOnGround()) {
             this.player.setState(states.JUMP);
-        } else if (!(input.keys.ArrowLeft || input.keys.ArrowRight)) {
-            this.player.setState(states.IDLE);
         }
     }
 }

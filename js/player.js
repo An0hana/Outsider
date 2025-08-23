@@ -66,12 +66,16 @@ export class Player {
         // 在非攻击状态下才允许移动
         if (this.currentState.state !== 'ATTACK') {
             if (input.keys.ArrowLeft) {
-                this.velocityX = -MOVE_SPEED;
-                this.facingRight = false;
+                this.velocityX -= MOVE_SPEED;
             }
             if (input.keys.ArrowRight) {
-                this.velocityX = MOVE_SPEED;
+                this.velocityX += MOVE_SPEED;
+            }
+            if(this.velocityX > 0){
                 this.facingRight = true;
+            }
+            if(this.velocityX < 0){
+                this.facingRight = false;
             }
         }
         this.x += this.velocityX;
