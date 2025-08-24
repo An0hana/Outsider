@@ -1,0 +1,31 @@
+export class InputHandler {
+    constructor() {
+        this.keys = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            Space: false,
+            Attack: false,
+        };
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            this._setKey(e.code, true);
+        });
+        window.addEventListener('keyup', (e) => {
+            this._setKey(e.code, false);
+        });
+    }
+
+    _setKey(code, value) {
+        switch (code) {
+            case 'ArrowLeft': this.keys.ArrowLeft = value; break;
+            case 'ArrowRight': this.keys.ArrowRight = value; break;
+            case 'Space': this.keys.Space = value; break;
+            case 'KeyX': this.keys.Attack = value; break;
+        }
+    }
+
+    consumeActionKeys() {
+        this.keys.Space = false;
+        this.keys.Attack = false;
+    }
+}

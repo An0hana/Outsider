@@ -1,14 +1,7 @@
 body {
     margin: 0;
     overflow: hidden;
-    background-color: #00000093;
-}
-canvas {
-    display: block;
-}body {
-    margin: 0;
-    overflow: hidden;
-    background-color: #000000af;
+    background-color: #00000000;
 }
 canvas {
     display: block;
