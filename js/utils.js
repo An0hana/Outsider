@@ -31,3 +31,7 @@ export function loadImage(path) {
         };
     });
 }
+
+export function loadJSON(path) {
+  return fetch(path).then(response => response.json());
+}

@@ -2,7 +2,8 @@ import { GRAVITY,
          MOVE_SPEED, 
          TARGET_H, 
          WALK_PRE_COUNT, 
-         frameDelayByState
+         frameDelayByState,
+         states
 } from './constants.js';
 import { IdleState,
          WalkState, 
@@ -13,12 +14,13 @@ import { IdleState,
 } from './states.js';
 
 export class Player {
-    constructor(canvasWidth, canvasHeight, assets) {
+    constructor(canvasWidth, canvasHeight, assets, tilemap) {
         //画布尺寸
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
         //已加载的游戏资源
         this.assets = assets;
+        this.tilemap = tilemap;
         //位置
         this.x = 150;
         this.y = 0;
@@ -58,6 +60,7 @@ export class Player {
 
     //更新玩家状态
     update(input) {
+        const { w: drawW, h: drawH } = this.getDrawSize();
         // 让当前状态处理键盘输入
         this.currentState.handleInput(input);
 
@@ -80,19 +83,49 @@ export class Player {
         }
         this.x += this.velocityX;
 
-        //垂直移动
-        this.y += this.velocityY;
-        if (!this.isOnGround()) {
-            this.velocityY += GRAVITY;
-        } else {
-            this.velocityY = 0;
-            this.y = this.canvasHeight - TARGET_H - 115;
+        if (this.velocityX > 0) {
+            const rightSide = this.x + drawW;
+            const middleY = this.y + drawH / 2;
+            const tileId = this.tilemap.getTile(rightSide, middleY);
+            if (tileId !== 0 && tileId !== null) {
+                const tileLeft = Math.floor(rightSide / this.tilemap.tileWidth) * this.tilemap.tileWidth;
+                this.x = tileLeft - drawW - 1; // -1 防止抖动
+                this.velocityX = 0;
+            }
+        }else if (this.velocityX < 0) {
+            const leftSide = this.x;
+            const middleY = this.y + drawH / 2;
+            const tileId = this.tilemap.getTile(leftSide, middleY);
+            if (tileId !== 0 && tileId !== null) {
+                const tileRight = (Math.floor(leftSide / this.tilemap.tileWidth) + 1) * this.tilemap.tileWidth;
+                this.x = tileRight + 1; // +1 防止抖动
+                this.velocityX = 0;
+            }
         }
 
-        //边界检测
-        const { w: drawW } = this.getDrawSize();
-        if (this.x < 0) this.x = 0;
-        if (this.x + drawW > this.canvasWidth) this.x = this.canvasWidth - drawW;
+        //垂直移动
+        this.velocityY += GRAVITY;
+        this.y += this.velocityY;
+
+
+        // 检查底部碰撞
+        if (this.velocityY > 0) { // 只有在下落时才检查
+        const feetX = this.x + drawW / 2;
+        const feetY = this.y + drawH;
+        const tileId = this.tilemap.getTile(feetX, feetY);
+
+            if (tileId !== 0 && tileId !== null) {
+                this.velocityY = 0;
+                // 将玩家的位置“对齐”到瓦片的顶部，防止下沉
+                const tileTop = Math.floor(feetY / this.tilemap.tileHeight) * this.tilemap.tileHeight;
+                this.y = tileTop - drawH;
+                
+                    // 并且，如果当前状态是 FALL，就切换到 LAND
+                    if (this.currentState.state === 'FALL') {
+                    this.setState(states.LAND);
+                    }
+            }
+        }
         
         // 动画帧更新
         this.updateAnimation();
@@ -176,9 +209,18 @@ export class Player {
         }
     }
 
-    //玩家地面状态
+    // player.js -> isONGround 方法
     isOnGround() {
-        return this.y + TARGET_H >= this.canvasHeight - 115;
+        
+    // 获取玩家绘制后的尺寸
+    const { w: drawW, h: drawH } = this.getDrawSize();
+    // 检查玩家脚底中心点下方的瓦片
+    const feetX = this.x + drawW / 2;
+    const feetY = this.y + drawH + 1; // +1 เพื่อให้แน่ใจว่ามันอยู่ใต้เท้าของผู้เล่น
+
+    const tileId = this.tilemap.getTile(feetX, feetY);
+    // 如果瓦片ID不为0（表示有瓦片），则认为在地面上
+    return tileId !== 0 && tileId !== null;
     }
 
     //玩家应被渲染的尺寸

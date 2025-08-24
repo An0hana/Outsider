@@ -1,7 +1,8 @@
 import { states } from './constants.js';
-import { loadSpriteSheet, loadImage } from './utils.js';
+import { loadSpriteSheet, loadImage, loadJSON } from './utils.js';
 import { InputHandler } from './inputHandler.js';
 import { Player } from './player.js';
+import Tilemap from './Tilemap.js';
 
 //获取画板/画笔
 const canvas = document.getElementById('gameCanvas');
@@ -12,7 +13,7 @@ canvas.height = window.innerHeight;
 //全局变量
 let player;
 let input;
-let bg;
+let tilemap;
 
 // 资源加载函数 
 async function loadAssets() {
@@ -24,7 +25,8 @@ async function loadAssets() {
         landData, 
         attackData, 
         slashImg, 
-        backgroundImg
+        mapData,
+        tilesetImg
     ] = await Promise.all([
         //并行加载所有资源，解析完成方继续执行
         loadSpriteSheet("./sprites/idle.png", 9),
@@ -34,10 +36,10 @@ async function loadAssets() {
         loadSpriteSheet("./sprites/land.png", 3),
         loadSpriteSheet("./sprites/attack.png", 5),
         loadImage("./sprites/lr1.png"),
-        loadImage("./sprites/background.png")
+        loadJSON("./maps/level1.json"),           
+        loadImage("./sprites/tileset.png"),   
     ]);
 
-    bg = backgroundImg;
 
     return {
         //将切割好的动画帧数分类存放
@@ -57,16 +59,20 @@ async function loadAssets() {
             fall: { w: fallData.frameWidth, h: fallData.frameHeight },
             land: { w: landData.frameWidth, h: landData.frameHeight },
             attack: { w: attackData.frameWidth, h: attackData.frameHeight },
-        }
+        },
+        mapData,     
+        tilesetImg,
     };
 }
 
 // 初始化函数
 function init(assets) {
     input = new InputHandler();
-    player = new Player(canvas.width, canvas.height, assets);
+    tilemap = new Tilemap(assets.mapData, assets.tilesetImg);
+  // 将 tilemap 实例传递给 Player
+    player = new Player(canvas.width, canvas.height, assets, tilemap);
     //玩家初始状态
-    player.y = canvas.height - 500;
+    player.y = canvas.height - 1000;
     player.velocityY = 0;
     player.setState(states.FALL);
     
@@ -78,10 +84,9 @@ function gameLoop() {
     //清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    //绘制背景
-    if (bg) {
-        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-    }
+  if (tilemap) { // <-- 新增地图绘制
+      tilemap.draw(ctx);
+  }
 
     player.update(input);
     player.draw(ctx);
