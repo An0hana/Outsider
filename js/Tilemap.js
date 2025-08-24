@@ -16,7 +16,7 @@ export default class Tilemap {
     this.columns  = ts0.columns ?? Math.floor(this.tileset.width / this.tileWidth);
 
     // 渲染顺序：Background -> Collisions -> Front
-    this.layerOrder = options.order ?? ['Background', 'Collision', 'Front'];
+    this.layerOrder = options.order ?? ['Back', 'Collision', 'Mid'];
 
     // 建立 name -> layer 的字典（不区分大小写）
     this.layers = Object.fromEntries(

@@ -14,6 +14,8 @@ canvas.height = window.innerHeight;
 let player;
 let input;
 let tilemap;
+let cameraX = 0;
+let cameraY = 0; 
 
 // 资源加载函数 
 async function loadAssets() {
@@ -81,20 +83,47 @@ function init(assets) {
 
 // 游戏主循环
 function gameLoop() {
-    //清空画布
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-  if (tilemap) { // <-- 新增地图绘制
-      tilemap.draw(ctx);
+// --- 更新相机 ---
+  // 让相机中心对准玩家，但给他一点移动空间
+  const cameraDeadzone = canvas.width / 4;
+  if (player.x > cameraX + canvas.width - cameraDeadzone) {
+      cameraX = player.x - (canvas.width - cameraDeadzone);
+  } else if (player.x < cameraX + cameraDeadzone) {
+      cameraX = player.x - cameraDeadzone;
   }
 
-    player.update(input);
-    player.draw(ctx);
+  if (player.y > cameraY + canvas.height - cameraDeadzone) {canvas.he
+      cameraY = player.y - (canvas.height - cameraDeadzone);
+  } else if (player.y < cameraY + cameraDeadzone) {
+      cameraY = player.y - cameraDeadzone;
+  }
 
-    //消耗本帧使用过的一次性指令，防止下一帧重复触发
-    input.consumeActionKeys();
-    
-    requestAnimationFrame(gameLoop);
+  // --- 相机边界 ---
+  const mapWidthPixels = tilemap.mapWidth * tilemap.tileWidth;
+  const mapHeightPixels = tilemap.mapHeight * tilemap.tileHeight;
+  if (cameraX < 0) cameraX = 0;
+  if (cameraX > mapWidthPixels - canvas.width) cameraX = mapWidthPixels - canvas.width;
+  if (cameraY < 0) cameraY = 0;
+  if (cameraY > mapHeightPixels - canvas.height) cameraY = mapHeightPixels - canvas.height;
+
+
+  ctx.save(); // 保存当前状态
+  ctx.translate(-cameraX, -cameraY); // 将整个坐标系向左移动，模拟相机向右
+  
+  // 在移动后的坐标系中绘制所有游戏世界的内容
+  if (tilemap) {
+      tilemap.draw(ctx);
+  }
+  player.draw(ctx);
+  
+  ctx.restore(); // 恢复坐标系，这样UI等元素就不会受相机影响
+  
+  // 更新逻辑
+  player.update(input);
+  // player.draw(ctx); // <-- 把这行移动到 ctx.translate 内部
+  
+  input.consumeActionKeys();
+  requestAnimationFrame(gameLoop);
 }
 
 // 监听窗口大小变化

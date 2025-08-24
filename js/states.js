@@ -31,6 +31,8 @@ export class IdleState extends State {
             this.player.setState(states.ATTACK);
         } else if (input.keys.Space && this.player.isOnGround()) {
             this.player.setState(states.JUMP);
+        }else if(!this.player.isOnGround()){
+            this.player.setState(states.FALL);
         }
     }
 }
@@ -50,6 +52,8 @@ export class WalkState extends State {
             this.player.setState(states.ATTACK);
         } else if (input.keys.Space && this.player.isOnGround()) {
             this.player.setState(states.JUMP);
+        } else if(!this.player.isOnGround()){
+            this.player.setState(states.FALL);
         }
     }
 }

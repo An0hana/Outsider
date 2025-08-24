@@ -1,6 +1,6 @@
 // 物理常量
 export const GRAVITY = 0.1;
-export const MOVE_SPEED = 3;
+export const MOVE_SPEED = 3; 
 export const JUMP_POWER = 5;
 
 // 玩家渲染常量
