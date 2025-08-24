@@ -13,17 +13,14 @@ export class AssetManager {
             slashImg, tilesetImg,
             mapData
         ] = await Promise.all([
-            // SpriteSheets
             loadSpriteSheet("./sprites/idle.png", 9),
             loadSpriteSheet("./sprites/walk.png", 8),
             loadSpriteSheet("./sprites/jump.png", 9),
             loadSpriteSheet("./sprites/fall.png", 3),
             loadSpriteSheet("./sprites/land.png", 3),
             loadSpriteSheet("./sprites/attack.png", 5),
-            // Images
             loadImage("./sprites/lr1.png"),
             loadImage("./sprites/tileset.png"),
-            // JSON
             loadJSON("./maps/level1.json"),
         ]);
 

@@ -15,14 +15,11 @@ export class Physics {
     }
 
     update(deltaTime) {
-        // 应用重力
         this.velocityY += this.gravity;
         
-        // 更新位置
         this.transform.x += this.velocityX;
         this.transform.y += this.velocityY;
 
-        // 处理碰撞
         this.handleCollisions();
     }
     
@@ -32,15 +29,14 @@ export class Physics {
         
         const { w: drawW, h: drawH } = this.renderer.getDrawSize();
 
-        // 水平碰撞
-        if (this.velocityX > 0) { // Moving right
+        if (this.velocityX > 0) {
             const rightSide = this.transform.x + drawW;
             const middleY = this.transform.y + drawH / 2;
             if (tilemap.isSolid(rightSide, middleY)) {
                 this.transform.x = Math.floor(rightSide / tilemap.tileWidth) * tilemap.tileWidth - drawW - 1;
                 this.velocityX = 0;
             }
-        } else if (this.velocityX < 0) { // Moving left
+        } else if (this.velocityX < 0) {
             const leftSide = this.transform.x;
             const middleY = this.transform.y + drawH / 2;
              if (tilemap.isSolid(leftSide, middleY)) {
@@ -49,8 +45,7 @@ export class Physics {
             }
         }
 
-        // 垂直碰撞
-        if (this.velocityY > 0) { // Moving down
+        if (this.velocityY > 0) { 
             const feetX = this.transform.x + drawW / 2;
             const feetY = this.transform.y + drawH;
             if (tilemap.isSolid(feetX, feetY)) {
@@ -66,7 +61,7 @@ export class Physics {
         
         const { w: drawW, h: drawH } = this.renderer.getDrawSize();
         const feetX = this.transform.x + drawW / 2;
-        const feetY = this.transform.y + drawH + 1; // Check 1 pixel below feet
+        const feetY = this.transform.y + drawH + 1; 
         return tilemap.isSolid(feetX, feetY);
     }
 }

@@ -11,10 +11,8 @@ import { states } from '../constants.js';
 export function createPlayer(assetManager) {
     const player = new GameObject('Player');
 
-    // 1. Add foundational components
-    player.addComponent(new Transform(150, -200)); // Start in the air
+    player.addComponent(new Transform(150, -200));
     
-    // 2. Add animation component
     const animations = {
         idle: assetManager.getSpriteSheet('idle'),
         walk: assetManager.getSpriteSheet('walk'),
@@ -25,12 +23,10 @@ export function createPlayer(assetManager) {
     };
     player.addComponent(new Animator(animations));
     
-    // 3. Add rendering component
     const slashFrame = assetManager.getImage('slash');
     player.addComponent(new SpriteRenderer(slashFrame));
     player.addComponent(new Physics());
     
-    // 4. Add state machine
     const stateMachine = player.addComponent(new StateMachine());
     stateMachine.addState(states.IDLE, new IdleState(player));
     stateMachine.addState(states.WALK, new WalkState(player));
@@ -39,10 +35,8 @@ export function createPlayer(assetManager) {
     stateMachine.addState(states.LAND, new LandState(player));
     stateMachine.addState(states.ATTACK, new AttackState(player));
 
-    // 5. Add controller component (must be after state machine)
     player.addComponent(new PlayerController());
     
-    // Set initial state
     stateMachine.setState(states.FALL);
 
     return player;

@@ -2,7 +2,7 @@ import { frameDelayByState, WALK_PRE_COUNT } from '../constants.js';
 
 export class Animator {
     constructor(animations) {
-        this.animations = animations; // { idle: spriteSheetData, ... }
+        this.animations = animations; 
         this.currentAnimationName = null;
         this.currentAnimation = null;
         this.currentFrameIndex = 0;

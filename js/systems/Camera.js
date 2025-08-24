@@ -9,7 +9,6 @@ export class Camera {
     update(target, tilemap) {
         if (!target) return;
 
-        // --- Camera Deadzone Logic ---
         const deadzoneX = this.viewportWidth / 4;
         const deadzoneY = this.viewportHeight / 4;
 
@@ -25,7 +24,6 @@ export class Camera {
             this.y = target.y - deadzoneY;
         }
 
-        // --- Camera Boundaries ---
         if (tilemap) {
             const mapWidthPixels = tilemap.mapWidth * tilemap.tileWidth;
             const mapHeightPixels = tilemap.mapHeight * tilemap.tileHeight;
