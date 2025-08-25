@@ -3,6 +3,7 @@ import { Transform } from './Transform.js';
 import { Animator } from './Animator.js';
 import { StateMachine } from './StateMachine.js';
 
+//负责将实体动画帧绘制到屏幕上
 export class SpriteRenderer {
     constructor(slashFrame) {
         this.slashFrame = slashFrame;
@@ -14,6 +15,7 @@ export class SpriteRenderer {
         this.stateMachine = this.gameObject.getComponent(StateMachine);
     }
 
+    //计算精灵在屏幕上应该绘制的尺寸（基于缩放）
     getDrawSize() {
         const size = this.animator.getFrameSize();
         if (size.h === 0) return { w: 0, h: 0 };
@@ -21,6 +23,7 @@ export class SpriteRenderer {
         return { w: size.w * scale, h: size.h * scale };
     }
 
+    //绘制方法
     draw(ctx) {
         const frameCanvas = this.animator.getCurrentFrame();
         if (!frameCanvas) return;
@@ -28,7 +31,7 @@ export class SpriteRenderer {
         const { w: drawW, h: drawH } = this.getDrawSize();
 
         ctx.save();
-        
+        //根据朝向翻转精灵
         if (this.transform.facingRight) { 
             ctx.translate(this.transform.x + drawW, this.transform.y);
             ctx.scale(-1, 1);
@@ -38,10 +41,11 @@ export class SpriteRenderer {
         }
         
         ctx.restore();
-
+        //如果有攻击特效，则绘制它
         this._drawSlash(ctx, drawW, drawH);
     }
     
+    //绘制攻击特效
     _drawSlash(ctx, playerW, playerH) {
         if (this.stateMachine && this.stateMachine.currentState.state === 'ATTACK') {
             const slashW = this.slashFrame.width;
@@ -56,13 +60,13 @@ export class SpriteRenderer {
             let slashX, slashY;
             
             ctx.save();
-            if (this.transform.facingRight) { 
+            if (this.transform.facingRight) { //朝右
                 slashX = this.transform.x + playerW * (1 - offsetX);
                 slashY = this.transform.y + playerH * offsetY;
                 ctx.translate(slashX + newW, slashY);
                 ctx.scale(-1, 1);
                 ctx.drawImage(this.slashFrame, 0, 0, newW, newH);
-            } else {
+            } else {//朝左
                 slashX = this.transform.x + playerW * offsetX - newW;
                 slashY = this.transform.y + playerH * offsetY;
                 ctx.drawImage(this.slashFrame, slashX, slashY, newW, newH);

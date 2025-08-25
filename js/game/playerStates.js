@@ -2,6 +2,9 @@ import { states, JUMP_POWER } from '../constants.js';
 import { Physics } from '../components/Physics.js';
 import { Animator } from '../components/Animator.js';
 import { StateMachine } from '../components/StateMachine.js';
+import { Transform } from '../components/Transform.js';
+import { SpriteRenderer } from '../components/SpriteRenderer.js';
+import { HealthComponent } from '../components/HealthComponent.js';
 
 class PlayerState {
     constructor(state, gameObject) {
@@ -96,9 +99,15 @@ export class AttackState extends PlayerState {
     constructor(player) { super(states.ATTACK, player); }
     enter() {
         this.animator.play('attack');
-        this.physics.velocityX = 0; 
+        this.physics.velocityX = 0;
+        this.attacked = false; 
     }
     handleInput(input) {
+        if(this.animator.currentFrameIndex === 3 && !this.attacked){
+            this.checkForHit();
+            this.attacked = true;
+        }
+
         if (this.animator.isAnimationFinished()) {
             if (!this.physics.isOnGround()) {
                 this.stateMachine.setState(states.FALL);
@@ -106,6 +115,41 @@ export class AttackState extends PlayerState {
                 this.stateMachine.setState(states.WALK);
             } else {
                 this.stateMachine.setState(states.IDLE);
+            }
+        }
+    }
+
+     checkForHit() {
+        const transform = this.gameObject.getComponent(Transform);
+        const renderer = this.gameObject.getComponent(SpriteRenderer);
+        const { w: playerW, h: playerH } = renderer.getDrawSize();
+        
+        const attackRange = 80;
+        const attackHeight = 60;
+        const attackOffsetX = 20;
+        
+        let hitboxX = transform.facingRight 
+            ? transform.x + playerW - attackOffsetX
+            : transform.x + attackOffsetX - attackRange;
+        let hitboxY = transform.y + (playerH - attackHeight) / 2;
+        
+        for (const other of this.gameObject.scene.gameObjects) {
+            if (other.name === 'Enemy' && other.active) {
+                const enemyTransform = other.getComponent(Transform);
+                const enemyRenderer = other.getComponent(SpriteRenderer);
+                const { w: enemyW, h: enemyH } = enemyRenderer.getDrawSize();
+
+                if (hitboxX < enemyTransform.x + enemyW &&
+                    hitboxX + attackRange > enemyTransform.x &&
+                    hitboxY < enemyTransform.y + enemyH &&
+                    hitboxY + attackHeight > enemyTransform.y) {
+                    
+                    console.log("击中敌人!");
+                    const enemyHealth = other.getComponent(HealthComponent);
+                    if (enemyHealth) {
+                        enemyHealth.takeDamage(25); 
+                    }
+                }
             }
         }
     }
